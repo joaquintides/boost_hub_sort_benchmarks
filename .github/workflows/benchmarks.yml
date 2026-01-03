@@ -161,5 +161,4 @@ jobs:
       - name: Run benchmark
         shell: powershell
         run: |
-          echo "running benchmarks and saving to $env:REPORT_FILE"
           ${{matrix.command}}

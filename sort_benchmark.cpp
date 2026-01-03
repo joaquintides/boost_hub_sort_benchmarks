@@ -143,9 +143,9 @@ int main()
   {
     std::cout << "1.E" << i << "              ";
   }
-  std::cout<<"\n";
+  std::cout << std::endl;
   for(double erasure_rate = 0.0; erasure_rate <= 0.9; erasure_rate += 0.1) {
-    std::cout << std::left << std::setw(11) << erasure_rate << std::right;
+    std::cout << std::left << std::setw(11) << erasure_rate << std::right << std::flush;
     for(std::size_t i = 3; i <= 7; ++i) {
       std::size_t n = (std::size_t)std::pow(10.0, (double)i);
 
@@ -192,7 +192,8 @@ int main()
       auto t4 = measure(sort4);
 
       print_winner(th, {t1, t2, t3, t4});
+      std::cout << std::flush;
     }
-    std::cout << "\n";
+    std::cout << std::endl;
   }
 }
