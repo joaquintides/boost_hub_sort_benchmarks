@@ -54,6 +54,7 @@ void resume_timing()
 
 #include <boost/core/detail/splitmix64.hpp>
 #include <boost/hub.hpp>
+#include <cmath>
 #include <cstring>
 #include <iostream>
 #include <iomanip>
