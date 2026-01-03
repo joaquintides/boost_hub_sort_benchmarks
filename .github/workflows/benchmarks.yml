@@ -99,8 +99,7 @@ jobs:
           if [ -n "${{matrix.xcode_version}}" ]; then
               DEVELOPER_DIR=/Applications/Xcode-${{matrix.xcode_version}}.app/Contents/Developer
           fi        
-          echo "running benchmarks and saving to "${REPORT_FILE}
-          (${{matrix.command}}) | tee ${REPORT_FILE}
+          ${{matrix.command}}
 
   windows:
     strategy:
@@ -163,4 +162,4 @@ jobs:
         shell: powershell
         run: |
           echo "running benchmarks and saving to $env:REPORT_FILE"
-          $(${{matrix.command}}) | Set-Content $env:REPORT_FILE -Passthru
+          ${{matrix.command}}
