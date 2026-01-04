@@ -125,7 +125,7 @@ jobs:
             outputfile: benchmark.exe            
             reportdir: vs-x64
             os: windows-2022
-            command: ./benchmark
+            command: benchmark
 
           - name: vs-x86
             compiler: cl
@@ -181,7 +181,3 @@ jobs:
               ${{matrix.command}}
             )
           )
-      - name: Run benchmark
-        shell: powershell
-        run: |
-          ${{matrix.command}}
