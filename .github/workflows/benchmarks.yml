@@ -161,14 +161,26 @@ jobs:
         run: |
           cd %GITHUB_WORKSPACE%
           git clone https://github.com/mattreecebentley/plf_hive.git hive-root
-      - name: Compile
+      - name: Compile and run benchmarks
         shell: cmd
         run: |
+          setlocal EnableExtensions EnableDelayedExpansion
           cd %GITHUB_WORKSPACE%
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{matrix.architecture}}
           set INCLUDE=%INCLUDE%;%GITHUB_WORKSPACE%\hub-root\include;%GITHUB_WORKSPACE%\hive-root;%GITHUB_WORKSPACE%\boost-root
           echo %INCLUDE%
-          ${{matrix.compiler}} %GITHUB_WORKSPACE%\${{matrix.sourcefile}} ${{matrix.compileroptions}}
+          for %%ELEMENT_SIZE in (16 32 64 80) do (
+            for %%NONTRIVIAL in (0 1) do (
+              if "%%NONTRIVIAL"=="1" (
+                set "DEFINES=/DELEMENT_SIZE=%%ELEMENT_SIZE /DNONTRIVIAL_ELEMENT"
+              ) else (
+                set "DEFINES=/DELEMENT_SIZE=%%ELEMENT_SIZE"
+              )
+              ${{matrix.compiler}} %GITHUB_WORKSPACE%\${{matrix.sourcefile}} ${{matrix.compileroptions}} !DEFINES!
+              if errorlevel 1 exit /b 1
+              ${{matrix.command}}
+            )
+          )
       - name: Run benchmark
         shell: powershell
         run: |

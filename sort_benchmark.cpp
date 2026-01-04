@@ -64,9 +64,6 @@ void resume_timing()
 #include <string>
 #include <vector>
 
-#define ELEMENT_SIZE 80
-#undef NONTRIVIAL_ELEMENT
-
 struct element
 {
   element(int n_): n{n_} {}
