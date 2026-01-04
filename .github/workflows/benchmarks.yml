@@ -135,7 +135,7 @@ jobs:
             outputfile: benchmark.exe            
             reportdir: vs-x86
             os: windows-2022
-            command: ./benchmark
+            command: benchmark
 
     runs-on: ${{matrix.os}}
 
