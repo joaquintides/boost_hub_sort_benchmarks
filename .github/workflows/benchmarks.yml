@@ -89,17 +89,28 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           git clone https://github.com/mattreecebentley/plf_hive.git hive-root
-      - name: Compile
+      - name: Compile and run benchmarks
         run: |
+          set -euo pipefail
           cd $GITHUB_WORKSPACE
           ${{matrix.compiler}} --version
-          ${{matrix.compiler}} $GITHUB_WORKSPACE/${{matrix.sourcefile}} ${{matrix.architecture}} ${{matrix.compileroptions}} -o ${{matrix.outputfile}} -I$GITHUB_WORKSPACE/hub-root/include -I$GITHUB_WORKSPACE/hive-root -I$GITHUB_WORKSPACE/boost-root
-      - name: Run benchmarks
-        run: |
           if [ -n "${{matrix.xcode_version}}" ]; then
               DEVELOPER_DIR=/Applications/Xcode-${{matrix.xcode_version}}.app/Contents/Developer
           fi        
-          ${{matrix.command}}
+          for ELEMENT_SIZE in 16 32 64 80; do
+            for NONTRIVIAL in 0 1; do
+              if [ "$NONTRIVIAL" -eq 1 ]; then
+                NONTRIVIAL_FLAG="-DNONTRIVIAL_ELEMENT"
+              else
+                NONTRIVIAL_FLAG=""
+              fi
+
+              ${{matrix.compiler}} $GITHUB_WORKSPACE/${{matrix.sourcefile}} ${{matrix.architecture}} ${{matrix.compileroptions}} -o ${{matrix.outputfile}} \
+                -I$GITHUB_WORKSPACE/hub-root/include -I$GITHUB_WORKSPACE/hive-root -I$GITHUB_WORKSPACE/boost-root \
+                -DELEMENT_SIZE=${ELEMENT_SIZE} ${NONTRIVIAL_FLAG} 
+              ${{matrix.command}}
+            done
+          done
 
   windows:
     strategy:
