@@ -126,6 +126,10 @@ void print_winner(double th, std::initializer_list<double> il)
 
 int main()
 {
+  static constexpr std::size_t size_limit =
+    sizeof(std::size_t) == 4?  800ull * 1024ull * 1024ull:
+                              2048ull * 1024ull * 1024ull;
+
   using hub = boost::hub<element>;
   using hive = plf::hive<element>;
 
@@ -184,6 +188,11 @@ int main()
         c.sort4();
         return c.size();
       };
+
+      if((double)n * (double)sizeof(element) / (1.0 - erasure_rate) > (double)size_limit) {
+        std::cout << "too large         " << std::flush;
+        continue;
+      }
 
       auto th = measure(sort_hive);
       auto t1 = measure(sort1);
