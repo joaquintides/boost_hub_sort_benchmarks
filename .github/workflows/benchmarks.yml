@@ -84,7 +84,7 @@ jobs:
       - name: Install Candidate Boost.Hub
         run: |
           cd $GITHUB_WORKSPACE
-          git clone -b feature/sort-algorithms https://github.com/joaquintides/hub.git hub-root
+          git clone -b feature/forward-available-list https://github.com/joaquintides/hub.git hub-root
       - name: Install plf_hive
         run: |
           cd $GITHUB_WORKSPACE
@@ -155,7 +155,7 @@ jobs:
         shell: cmd
         run: |
           cd %GITHUB_WORKSPACE%
-          git clone -b feature/sort-algorithms https://github.com/joaquintides/hub.git hub-root
+          git clone -b feature/forward-available-list https://github.com/joaquintides/hub.git hub-root
       - name: Install plf_hive
         shell: cmd
         run: |
