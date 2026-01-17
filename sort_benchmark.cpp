@@ -191,21 +191,26 @@ int main()
         continue;
       }
 
-      auto th = measure(sort_hive);
-      auto t1 = measure(sort1);
-      auto t2 = measure(sort2);
+      try{
+        auto th = measure(sort_hive);
+        auto t1 = measure(sort1);
+        auto t2 = measure(sort2);
 
-      if constexpr(sizeof(element) <= 2 * sizeof(std::size_t)) {
-        auto t3 = measure(sort3);
-        auto t4 = measure(sort4);
-        print_winner(th, {t1, t2, t3, t4});
+        if constexpr(sizeof(element) <= 2 * sizeof(std::size_t)) {
+          auto t3 = measure(sort3);
+          auto t4 = measure(sort4);
+          print_winner(th, {t1, t2, t3, t4});
+        }
+        else{
+          (void)sort3;
+          (void)sort4;
+          print_winner(th, {t1, t2});
+        }
+        std::cout << std::flush;
       }
-      else{
-        (void)sort3;
-        (void)sort4;
-        print_winner(th, {t1, t2});
+      catch(const std::bad_alloc&) {
+        std::cout << "out of memory     " << std::flush;
       }
-      std::cout << std::flush;
     }
     std::cout << std::endl;
   }
