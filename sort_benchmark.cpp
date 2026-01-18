@@ -136,6 +136,9 @@ int main()
 #else
   std::cout << "trivial movement\n";
 #endif
+#if defined(BOOST_HUB_ENABLE_BIDIRECTIONAL_AVAILABLE_LIST)
+  std::cout << "uses bidirectional available list\n";
+#endif
   std::cout << "n (ax, bx): alg #n wins, ax faster than alternatives, bx faster than plf::hive\n"
             << std::string(99, '-') << "\n"
             << std::left << std::setw(11) << "" << "container size\n" << std::right
