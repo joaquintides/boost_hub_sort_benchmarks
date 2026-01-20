@@ -107,7 +107,7 @@ jobs:
 
               ${{matrix.compiler}} $GITHUB_WORKSPACE/${{matrix.sourcefile}} ${{matrix.architecture}} ${{matrix.compileroptions}} -o ${{matrix.outputfile}} \
                 -I$GITHUB_WORKSPACE/hub-root/include -I$GITHUB_WORKSPACE/hive-root -I$GITHUB_WORKSPACE/boost-root \
-                -DELEMENT_SIZE=${ELEMENT_SIZE} ${NONTRIVIAL_FLAG} -DBOOST_HUB_ENABLE_BIDIRECTIONAL_AVAILABLE_LIST
+                -DELEMENT_SIZE=${ELEMENT_SIZE} ${NONTRIVIAL_FLAG}
               ${{matrix.command}}
             done
           done
@@ -176,7 +176,7 @@ jobs:
               ) else (
                 set "DEFINES=/DELEMENT_SIZE=%%S"
               )
-              ${{matrix.compiler}} %GITHUB_WORKSPACE%\${{matrix.sourcefile}} ${{matrix.compileroptions}} !DEFINES! /DBOOST_HUB_ENABLE_BIDIRECTIONAL_AVAILABLE_LIST
+              ${{matrix.compiler}} %GITHUB_WORKSPACE%\${{matrix.sourcefile}} ${{matrix.compileroptions}} !DEFINES!
               if errorlevel 1 exit /b 1
               ${{matrix.command}}
             )
