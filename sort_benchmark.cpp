@@ -69,6 +69,11 @@ struct element
   element(int n_): n{n_} {}
 
 #if defined(NONTRIVIAL_ELEMENT)
+  ~element()
+  {
+    std::memset(payload, 0, sizeof(payload));
+  }
+
   element(element&& x): n{x.n}
   {
     std::memcpy(payload, x.payload, sizeof(payload));
@@ -93,13 +98,13 @@ struct element
 template<typename Container>
 Container make(std::size_t n, double erasure_rate)
 {
-  std::size_t   m = (std::size_t)((double)n / (1.0 - erasure_rate));
   std::uint64_t erasure_cut = 
     (std::uint64_t)(erasure_rate * (double)(std::uint64_t)(-1));
 
-  Container                                 c;
-  boost::detail::splitmix64                 rng;
-  for(std::size_t i = 0; i < m; ++i) c.insert((int)rng());
+  Container                 c;
+  boost::detail::splitmix64 rng;
+
+  for(std::size_t i = 0; i < n; ++i) c.insert((int)rng());
   erase_if(c, [&] (const auto&){
     return rng() < erasure_cut;
   });
@@ -189,7 +194,7 @@ int main()
         return c.size();
       };
 
-      if((double)n * (double)sizeof(element) / (1.0 - erasure_rate) > (double)size_limit) {
+      if(n * sizeof(element) > size_limit) {
         std::cout << "too large         " << std::flush;
         continue;
       }
