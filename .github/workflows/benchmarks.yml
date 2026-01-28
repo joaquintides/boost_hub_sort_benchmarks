@@ -109,6 +109,46 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           git clone https://github.com/mattreecebentley/plf_hive.git hive-root
+      - name: Output cache sizes
+        run: |
+          set -e
+          OS="$(uname -s)"
+          echo "Cache sizes:"
+          if [ "$OS" = "Darwin" ]; then
+              # macOS uses sysctl
+              L1D=$(sysctl -n hw.l1dcachesize 2>/dev/null || echo "N/A")
+              L1I=$(sysctl -n hw.l1icachesize 2>/dev/null || echo "N/A")
+              L2=$(sysctl -n hw.l2cachesize 2>/dev/null || echo "N/A")
+              L3=$(sysctl -n hw.l3cachesize 2>/dev/null || echo "N/A")
+              echo "L1 Data Cache: $L1D bytes"
+              echo "L1 Instruction Cache: $L1I bytes"
+              echo "L2 Cache: $L2 bytes"
+              echo "L3 Cache: $L3 bytes"
+          else
+              # Linux / POSIX (via sysfs)
+              CACHE_BASE="/sys/devices/system/cpu/cpu0/cache"
+              get_cache_size() {
+                  local level="$1"
+                  local type="$2"
+                  for idx in "$CACHE_BASE"/index*; do
+                      [ -f "$idx/level" ] || continue
+                      if [ "$(cat "$idx/level")" = "$level" ] &&
+                         [ "$(cat "$idx/type")" = "$type" ]; then
+                          cat "$idx/size"
+                          return
+                      fi
+                  done
+                  echo "N/A"
+              }
+              L1D=$(get_cache_size 1 Data)
+              L1I=$(get_cache_size 1 Instruction)
+              L2=$(get_cache_size 2 Unified)
+              L3=$(get_cache_size 3 Unified)
+              echo "L1 Data Cache: $L1"
+              echo "L1 Instruction Cache: $L1I"
+              echo "L2 Cache: $L2"
+              echo "L3 Cache: $L3"
+          fi
       - name: Compile and run benchmarks
         run: |
           set -euo pipefail
