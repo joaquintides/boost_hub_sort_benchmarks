@@ -145,6 +145,7 @@ int main()
   std::cout << "uses forward available list\n";
 #endif
   std::cout << "n (ax, bx): alg #n wins, ax faster than alternatives, bx faster than plf::hive\n"
+            << "1: compact_sort, 2: proxy_sort, 3: transfer_sort\n"
             << std::string(99, '-') << "\n"
             << std::left << std::setw(11) << "" << "container size\n" << std::right
             << std::left << std::setw(11) << "erase rate" << std::right;
@@ -169,28 +170,21 @@ int main()
         pause_timing();
         auto c = make<hub>(n, erasure_rate);
         resume_timing();
-        c.sort();
+        c.compact_sort();
         return c.size();
       };
       auto sort2 = [&] {
         pause_timing();
         auto c = make<hub>(n, erasure_rate);
         resume_timing();
-        c.sort2();
+        c.proxy_sort();
         return c.size();
       };
       auto sort3 = [&] {
         pause_timing();
         auto c = make<hub>(n, erasure_rate);
         resume_timing();
-        c.sort3();
-        return c.size();
-      };
-      auto sort4 = [&] {
-        pause_timing();
-        auto c = make<hub>(n, erasure_rate);
-        resume_timing();
-        c.sort4();
+        c.transfer_sort();
         return c.size();
       };
 
@@ -206,12 +200,10 @@ int main()
 
         if constexpr(sizeof(element) <= 2 * sizeof(std::size_t)) {
           auto t3 = measure(sort3);
-          auto t4 = measure(sort4);
-          print_winner(th, {t1, t2, t3, t4});
+          print_winner(th, {t1, t2, t3});
         }
         else{
           (void)sort3;
-          (void)sort4;
           print_winner(th, {t1, t2});
         }
         std::cout << std::flush;
